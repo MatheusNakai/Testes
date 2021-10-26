@@ -7,3 +7,6 @@ class User:
 
     def __str__(self):
         return 'User: {}'.format(self.name)
+
+    def addExp(self, exp):
+        self.exp += exp
