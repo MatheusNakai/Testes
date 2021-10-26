@@ -10,3 +10,6 @@ class User:
 
     def addExp(self, exp):
         self.exp += exp
+
+    def addLvl(self, lvl):
+        self.lvl += lvl
