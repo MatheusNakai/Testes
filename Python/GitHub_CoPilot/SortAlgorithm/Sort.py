@@ -1,8 +1,10 @@
-def InsertSort(A):
-    for i in range(1,len(A)):
-        key = A[i]
-        j = i-1
-        while j >= 0 and A[j] > key:
-            A[j+1] = A[j]
+def insertion_sort(arr):
+    for i in range(1, len(arr)):
+        key = arr[i]
+        j = i - 1
+        while j >= 0 and key < arr[j]:
+            arr[j + 1] = arr[j]
             j -= 1
-        A[j+1] = key
+        arr[j + 1] = key
+    return arr
+    
