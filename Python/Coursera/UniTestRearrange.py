@@ -1,4 +1,5 @@
 from Regex import rearrenge_name
+from Regex import multi_vowel_word
 import unittest
 
 class TestRearrange(unittest.TestCase):
