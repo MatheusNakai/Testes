@@ -5,3 +5,8 @@ def rearrenge_name(name):
     if result is None:
         return name
     return "{} {}".format(result[2],result[1])
+
+def multi_vowel_word(text):
+    pattern=r"\b\w*[aeiou]{3,}\w*\b"
+    result=re.findall(pattern,text)
+    return result
