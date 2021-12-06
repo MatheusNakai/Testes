@@ -104,7 +104,7 @@ class MySQL_Connection(db_name: String) :Generic_Actions{
         check_Connection()
         execute_Statement("DELETE FROM ${this.DB_Name}.${table} WHERE id = $id")
     }
-    
+
     override fun get_Id(table: String, column: String, value: String): Int {
         check_Connection()
         val id: ResultSet = this.SQL_Statement.executeQuery("SELECT id FROM ${this.DB_Name}.${table} WHERE ${column} = '${value}'")
