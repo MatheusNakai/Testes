@@ -166,7 +166,7 @@ object DB_Table_Printer{
             System.err.println("DBTablePrinter Error: No table name (tableName is null)!")
             return
         }
-        if (tableName.length == 0) {
+        if (tableName.isEmpty()) {
             System.err.println("DBTablePrinter Error: Empty table name!")
             return
         }
@@ -230,8 +230,7 @@ object DB_Table_Printer{
             }
 
             // Get the meta data object of this ResultSet.
-            val rsmd: ResultSetMetaData
-            rsmd = rs.metaData
+            val rsmd: ResultSetMetaData = rs.metaData
 
             // Total number of columns in this ResultSet
             val columnCount = rsmd.columnCount

@@ -93,16 +93,19 @@ class MySQL_Connection(db_name: String) :Generic_Actions{
         data.remove("id")
         execute_Statement("INSERT INTO ${this.DB_Name}.${table} (${data.keys.joinToString { it -> it }}) values (${data.values.joinToString { it -> "\'${it}\'" }});")
     }
+
     override fun update(table: String, data: HashMap<String, String>){
         check_Connection()
         val id = data.remove("id")
         execute_Statement("UPDATE ${this.DB_Name}.${table} SET ${data.keys.joinToString { it -> "$it = \'${data[it]}\'" }} WHERE id = $id")
     }
+
     override fun delete(table: String, id: Int){
         check_Connection()
         execute_Statement("DELETE FROM ${this.DB_Name}.${table} WHERE id = $id")
     }
-    override fun getId(table: String, column: String, value: String): Int {
+    
+    override fun get_Id(table: String, column: String, value: String): Int {
         check_Connection()
         val id: ResultSet = this.SQL_Statement.executeQuery("SELECT id FROM ${this.DB_Name}.${table} WHERE ${column} = '${value}'")
         if (id.next()) {
@@ -112,14 +115,16 @@ class MySQL_Connection(db_name: String) :Generic_Actions{
         id.close()
         return -1
     }
-    override fun getById(table: String, id: Int): Map<String, String>? {
+
+    override fun get_By_Id(table: String, id: Int): Map<String, String>? {
         check_Connection()
         val result: ResultSet = this.SQL_Statement.executeQuery("SELECT * FROM ${this.DB_Name}.${table} WHERE id = '${id}'")
         val map = resultSetToList(result)
         result.close()
         return map[0]
     }
-    override fun getAll(table: String, where: String): List<Map<String,String>> {
+
+    override fun get_All(table: String, where: String): List<Map<String,String>> {
         check_Connection()
         val result: ResultSet = this.SQL_Statement.executeQuery("SELECT * FROM ${this.DB_Name}.${table} WHERE ${where}")
         val map = resultSetToList(result)
