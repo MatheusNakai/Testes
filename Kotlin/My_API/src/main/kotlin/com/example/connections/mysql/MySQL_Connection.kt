@@ -3,8 +3,8 @@ package com.example.connections.mysql
 import com.example.connections.Generic_Actions
 import com.example.connections.errors.DATABASE_CONNECTION_FAILED
 import com.example.shared.Shared_Paths
-import io.ktor.network.sockets.Connection
-import kotlin.reflect.jvm.internal.impl.load.kotlin.JvmType
+import com.example.utils.DB_Table_Printer
+import java.sql.Connection
 import java.sql.*
 
 class MySQL_Connection(db_name: String) :Generic_Actions{
@@ -23,9 +23,10 @@ class MySQL_Connection(db_name: String) :Generic_Actions{
         this.DB_Name = db_name
     }
 
-    private fun create_Connection(): Connection{
+    private fun create_Connection(): Connection {
+        var c : Connection
         try{
-            val c  = DriverManager.getConnection(
+            c  = DriverManager.getConnection(
                 "jdbc:mysql://$url:$port/?characterEncoding=utf8&useUnicode=true",
                 "root",
                 "password"
@@ -39,7 +40,7 @@ class MySQL_Connection(db_name: String) :Generic_Actions{
         }
     }
 
-    private fun checkConnection(){
+    private fun check_Connection(){
         try {
             if (connection.isClosed) {
                 connection = create_Connection()
@@ -67,45 +68,62 @@ class MySQL_Connection(db_name: String) :Generic_Actions{
     }
 
     private fun create_Statement(): Statement {
-        checkConnection()
-        return this.connection.create_Statement()
+        check_Connection()
+        return this.connection.createStatement()
     }
 
-    private fun executeStatement(query: String) {
-        checkConnection()
+    private fun execute_Statement(query: String) {
+        check_Connection()
         if (this.SQL_Statement.isClosed){
             this.SQL_Statement = create_Statement()
         }
-        val preparedStatement = this.connection.prepare_Statement(query)
+        val preparedStatement = this.connection.prepareStatement(query)
         preparedStatement!!.executeUpdate()
 
     }
 
-    override fun read(table: String, where: String) {
-        TODO("Not yet implemented")
+    override fun read(table: String, where: String){
+        check_Connection()
+        var result: ResultSet = this.SQL_Statement.executeQuery("SELECT * FROM ${this.DB_Name}.${table} WHERE ${where}")
+        DB_Table_Printer.printResultSet(result)
     }
 
-    override fun create(table: String, data: HashMap<String, String>) {
-        TODO("Not yet implemented")
+    override fun create(table: String, data: HashMap<String, String>){
+        check_Connection()
+        data.remove("id")
+        execute_Statement("INSERT INTO ${this.DB_Name}.${table} (${data.keys.joinToString { it -> it }}) values (${data.values.joinToString { it -> "\'${it}\'" }});")
     }
-
-    override fun update(table: String, data: HashMap<String, String>) {
-        TODO("Not yet implemented")
+    override fun update(table: String, data: HashMap<String, String>){
+        check_Connection()
+        val id = data.remove("id")
+        execute_Statement("UPDATE ${this.DB_Name}.${table} SET ${data.keys.joinToString { it -> "$it = \'${data[it]}\'" }} WHERE id = $id")
     }
-
-    override fun delete(table: String, id: Int) {
-        TODO("Not yet implemented")
+    override fun delete(table: String, id: Int){
+        check_Connection()
+        execute_Statement("DELETE FROM ${this.DB_Name}.${table} WHERE id = $id")
     }
-
     override fun getId(table: String, column: String, value: String): Int {
-        TODO("Not yet implemented")
+        check_Connection()
+        val id: ResultSet = this.SQL_Statement.executeQuery("SELECT id FROM ${this.DB_Name}.${table} WHERE ${column} = '${value}'")
+        if (id.next()) {
+            val idNumber = id.getObject("id") as Int?
+            return idNumber?: -1
+        }
+        id.close()
+        return -1
     }
-
     override fun getById(table: String, id: Int): Map<String, String>? {
-        TODO("Not yet implemented")
+        check_Connection()
+        val result: ResultSet = this.SQL_Statement.executeQuery("SELECT * FROM ${this.DB_Name}.${table} WHERE id = '${id}'")
+        val map = resultSetToList(result)
+        result.close()
+        return map[0]
     }
-
-    override fun getAll(table: String, where: String): List<Map<String, String>> {
-        TODO("Not yet implemented")
+    override fun getAll(table: String, where: String): List<Map<String,String>> {
+        check_Connection()
+        val result: ResultSet = this.SQL_Statement.executeQuery("SELECT * FROM ${this.DB_Name}.${table} WHERE ${where}")
+        val map = resultSetToList(result)
+        result.close()
+        return map
     }
 }
