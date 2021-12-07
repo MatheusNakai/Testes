@@ -5,7 +5,6 @@ from shared.Shared_Paths import Shared_Path
 
 
 class MySQL_Connection:
-
     def __init__(self):
         self.db = None
         self.create_connection()
@@ -81,4 +80,3 @@ class MySQL_Connection:
         for row in result:
             list_Of_Dictionary.append(row)
         return list_Of_Dictionary
-
