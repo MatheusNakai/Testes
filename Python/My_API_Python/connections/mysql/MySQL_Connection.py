@@ -12,7 +12,7 @@ class MySQL_Connection:
     def create_connection(self):
         shared_path = Shared_Path()
         try:
-            self.db = mysql.connector.connect(**shared_path.config)
+            self.db = mysql.connector.connect(**shared_path.mysql)
         except mysql.connector.Error as err:
             if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
                 print("Something is wrong with your user name or password")
