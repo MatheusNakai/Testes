@@ -80,3 +80,11 @@ class MySQL_Connection:
         for row in result:
             list_Of_Dictionary.append(row)
         return list_Of_Dictionary
+
+    def create_Table(self, table: str, dictionary: dict):
+        query = f"CREATE TABLE {table} ("
+        for key, value in dictionary.items():
+            query += f"{key},"
+        query = query[:-1]
+        query += ")"
+        self.execute_query(query)
