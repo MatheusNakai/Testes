@@ -36,7 +36,7 @@ class MySQL_Connection:
         for row in result:
             print(row)
 
-    def create(self, table: str, dictionary: dict):
+    def insert(self, table: str, dictionary: dict):
         keys = ""
         values = ""
         for key, value in dictionary.items():
