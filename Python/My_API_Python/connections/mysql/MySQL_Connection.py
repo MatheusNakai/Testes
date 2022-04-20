@@ -28,8 +28,13 @@ class MySQL_Connection:
 
     def execute_query(self, query: str):
         cursor = self.db.cursor(dictionary=True)
-        cursor.execute(query)
-        return cursor
+        try:
+            cursor.execute(query)
+            result = cursor.fetchall()
+            return result
+        except mysql.connector.Error as err:
+            print(err)
+            return None
 
     def read(self, table: str, where: str):
         result = self.execute_query(f"SELECT * FROM {table} WHERE {where}")
