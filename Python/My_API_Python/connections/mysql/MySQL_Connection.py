@@ -1,8 +1,6 @@
-import mysql.connector
-from mysql.connector import errorcode
+import mysql
 
 from shared.Shared_Paths import Shared_Path
-
 
 class MySQL_Connection:
     def __init__(self):
@@ -14,9 +12,9 @@ class MySQL_Connection:
         try:
             self.db = mysql.connector.connect(**shared_path.mysql)
         except mysql.connector.Error as err:
-            if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
+            if err.errno == mysql.connector.errorcode.ER_ACCESS_DENIED_ERROR:
                 print("Something is wrong with your user name or password")
-            elif err.errno == errorcode.ER_BAD_DB_ERROR:
+            elif err.errno == mysql.connector.errorcode.ER_BAD_DB_ERROR:
                 print("Database does not exist")
             else:
                 print(err)
